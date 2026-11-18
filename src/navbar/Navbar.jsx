@@ -1,5 +1,7 @@
 
 import React, { useState } from "react";
+import { ShoppingCart } from "lucide-react";
+import { useCart } from "../context/CartContext";
 import {
   GoogleLogin,
   googleLogout,
@@ -11,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu, X, LogOut } from "lucide-react";
 
 function Navbar() {
+  const { totalItems } = useCart();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(() => {
@@ -21,35 +24,30 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Google Login Success
-  const handleLoginSuccess = (credentialResponse) => {
-    try {
-      const decoded = jwtDecode(credentialResponse.credential);
+const handleLoginSuccess = (credentialResponse) => {
+  const decoded = jwtDecode(credentialResponse.credential);
 
-      console.log(decoded);
+  setUser(decoded);
 
-      setUser(decoded);
+  localStorage.setItem(
+    "googleUser",
+    JSON.stringify(decoded)
+  );
 
-      localStorage.setItem(
-        "googleUser",
-        JSON.stringify(decoded)
-      );
-
-      navigate("/home");
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
+  navigate("/home");
+}
 
   // Google Logout
-  const handleLogout = () => {
-    googleLogout();
+const handleLogout = () => {
+  googleLogout();
 
-    localStorage.removeItem("googleUser");
+  localStorage.removeItem("googleUser");
 
-    setUser(null);
+  setUser(null);
 
-    navigate("/");
-  };
+  navigate("/");
+};
+  
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -129,6 +127,20 @@ function Navbar() {
               />
 
             )}
+            <button
+  onClick={() => navigate("/cart")}
+  className="relative p-2 text-gray-700 hover:text-indigo-600"
+>
+  <ShoppingCart size={26} />
+
+  {totalItems > 0 && (
+    <span className="absolute -top-1 -right-1
+      bg-red-500 text-white text-xs
+      w-5 h-5 rounded-full flex items-center justify-center">
+      {totalItems}
+    </span>
+  )}
+</button>
 
           </div>
 

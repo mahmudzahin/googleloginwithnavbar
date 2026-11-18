@@ -1,15 +1,18 @@
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import "./index.css";
 
+import { CartProvider } from "./context/CartContext";
+import App from "./App";
+import "./index.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <GoogleOAuthProvider clientId={CLIENT_ID}>
-        <App />
+        <CartProvider>
+          <App />
+        </CartProvider>
       </GoogleOAuthProvider>
     </BrowserRouter>
   </React.StrictMode>
